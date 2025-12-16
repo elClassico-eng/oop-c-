@@ -1,7 +1,8 @@
 using System;
 using System.Text.RegularExpressions;
+using FieldInterface;
 
-namespace FieldAlgebra.Lab3
+namespace ComplexNumbers
 {
     public class InvalidComplexFormatException : Exception
     {
@@ -78,23 +79,13 @@ namespace FieldAlgebra.Lab3
             throw new InvalidComplexFormatException($"Неверный формат строки: {str}. Ожидается формат '2+4i', '-4i' или '5'");
         }
 
-        public static ComplexNumber Random()
+        // Метод GenerateRandom() уже полностью соответствует интерфейсу IField!
+        public static ComplexNumber GenerateRandom()
         {
             Random random = new Random();
             double realPart = (random.NextDouble() - 0.5) * 20;
             double imaginaryPart = (random.NextDouble() - 0.5) * 20;
             return new ComplexNumber(realPart, imaginaryPart);
-        }
-
-        public static ComplexNumber GenerateRandom(ComplexNumber min, ComplexNumber max)
-        {
-            if (min == null || max == null)
-                throw new ArgumentNullException("Границы интервала не могут быть null");
-
-            Random random = new Random();
-            double realValue = min.real + (max.real - min.real) * random.NextDouble();
-            double imagValue = min.imaginary + (max.imaginary - min.imaginary) * random.NextDouble();
-            return new ComplexNumber(realValue, imagValue);
         }
 
         public static ComplexNumber operator +(ComplexNumber a, ComplexNumber b)
@@ -137,14 +128,6 @@ namespace FieldAlgebra.Lab3
             return new ComplexNumber(newReal, newImaginary);
         }
 
-        public static ComplexNumber operator -(ComplexNumber a)
-        {
-            if (a == null)
-                throw new ArgumentNullException("Операнд не может быть null");
-
-            return new ComplexNumber(-a.real, -a.imaginary);
-        }
-
         public static bool operator ==(ComplexNumber a, ComplexNumber b)
         {
             if (ReferenceEquals(a, b)) return true;
@@ -171,8 +154,6 @@ namespace FieldAlgebra.Lab3
                 return new ComplexNumber(real / denominator, -imaginary / denominator);
             }
         }
-
-        public bool IsZero => Math.Abs(real) < 1e-10 && Math.Abs(imaginary) < 1e-10;
 
         public override string ToString()
         {

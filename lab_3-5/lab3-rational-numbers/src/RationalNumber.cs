@@ -1,7 +1,8 @@
 using System;
 using System.Text.RegularExpressions;
+using FieldInterface;
 
-namespace FieldAlgebra.Lab5
+namespace RationalNumbers
 {
     public class InvalidRationalFormatException : Exception
     {
@@ -79,14 +80,16 @@ namespace FieldAlgebra.Lab5
             return new RationalNumber(num, den);
         }
 
-        public static RationalNumber Random()
+        // Реализация интерфейса IField - генерация случайного числа без параметров
+        public static RationalNumber GenerateRandom()
         {
             Random random = new Random();
-            int num = random.Next(-100, 101);
-            uint den = (uint)random.Next(1, 101);
-            return new RationalNumber(num, den);
+            int numerator = random.Next(-1000, 1001);  // От -10.00 до 10.00
+            uint denominator = (uint)random.Next(1, 101);  // От 1 до 100
+            return new RationalNumber(numerator, denominator);
         }
 
+        // Существующий метод GenerateRandom с параметрами - для обратной совместимости
         public static RationalNumber GenerateRandom(RationalNumber min, RationalNumber max)
         {
             if (min == null || max == null)
@@ -105,18 +108,6 @@ namespace FieldAlgebra.Lab5
             uint randomDenominator = 100;
 
             return new RationalNumber(randomNumerator, randomDenominator);
-        }
-
-        public static RationalNumber FromDouble(double value)
-        {
-            int denominator = 1000000;
-            int numerator = (int)(value * denominator);
-            return new RationalNumber(numerator, (uint)Math.Abs(denominator));
-        }
-
-        public double ToDouble()
-        {
-            return (double)numerator / denominator;
         }
 
         public static RationalNumber operator +(RationalNumber a, RationalNumber b)
@@ -164,14 +155,6 @@ namespace FieldAlgebra.Lab5
                 newNumerator = -newNumerator;
 
             return new RationalNumber(newNumerator, newDenominator);
-        }
-
-        public static RationalNumber operator -(RationalNumber a)
-        {
-            if (a == null)
-                throw new ArgumentNullException("Операнд не может быть null");
-
-            return new RationalNumber(-a.numerator, a.denominator);
         }
 
         public static bool operator ==(RationalNumber a, RationalNumber b)
@@ -228,8 +211,6 @@ namespace FieldAlgebra.Lab5
                     return new RationalNumber(-(int)denominator, (uint)(-numerator));
             }
         }
-
-        public bool IsZero => numerator == 0;
 
         public override string ToString()
         {
